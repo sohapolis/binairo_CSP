@@ -26,6 +26,7 @@ public class Binairo {
         state.printBoard();
         drawLine();
         state.printDomain();
+        System.out.println(MRV(state)[0]+","+MRV(state)[1]);
 
         //backtrack(state);
         long tEnd = System.nanoTime();
@@ -148,6 +149,20 @@ public class Binairo {
         }
 
         return true;
+    }
+
+    private int[] MRV(State state){
+        int[] point=new int[2];
+        for (int i = 0; i <n ; i++) {
+            for (int j = 0; j <n ; j++) {
+                if (state.getDomain().get(i).get(j).size() == 1 ) {
+                    System.out.println("hi");
+                    if (!state.getDomain().get(i).get(j).get(0).equals("n")) return new int[]{i, j};
+                }
+                point= new int[]{i, j};
+            }
+        }
+        return point;
     }
 
     private boolean checkNumberOfCircles(State state) {
