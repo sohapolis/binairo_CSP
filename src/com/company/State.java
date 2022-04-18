@@ -58,6 +58,7 @@ public class State {
 
         return res;
     }
+    /*
     private ArrayList<ArrayList<ArrayList<String>>> copyDomain(ArrayList<ArrayList<ArrayList<String>>> cDomain) {
         ArrayList<ArrayList<ArrayList<String>>> res = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -74,6 +75,23 @@ public class State {
                     res.get(i).get(j).set(k, cDomain.get(i).get(j).get(k));
                 }
             }
+        }
+
+        return res;
+    }
+
+     */
+    private ArrayList<ArrayList<ArrayList<String>>> copyDomain(ArrayList<ArrayList<ArrayList<String>>> cDomain) {
+
+        ArrayList<ArrayList<ArrayList<String>>> res = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            ArrayList<ArrayList<String>> row=new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                ArrayList<String> domains=new ArrayList<>();
+                domains.addAll(cDomain.get(i).get(j));
+                row.add(domains);
+            }
+            res.add(row);
         }
 
         return res;

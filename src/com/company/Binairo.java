@@ -202,10 +202,19 @@ public class Binairo {
         for (int i = 0; i <state.getDomain().get(x).get(y).size(); i++) {
             String cur = state.getDomain().get(x).get(y).get(i);
             State temp= state.copy();
+
+            /*
+            System.out.println("////////////////////");
+            temp.printDomain();
+            System.out.println("////////////////////");
+            temp.printBoard();
+
+             */
+
             temp.getBoard().get(x).set(y,cur.toUpperCase());
             temp.getDomain().get(x).set(y, new ArrayList<>(List.of("n")));
             int compering=forwardChecking(temp,x,y);
-            //System.out.println("cur: "+cur+ " compering:"+compering);
+            System.out.println("point "+x+","+y+" cur: "+cur+ " compering:"+compering);
             if (compering < min) {
                 min = compering;
                 s=cur;
