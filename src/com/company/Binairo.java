@@ -1,5 +1,9 @@
 package com.company;
+import javax.swing.plaf.IconUIResource;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class Binairo {
     private final ArrayList<ArrayList<String>> board;
@@ -26,14 +30,16 @@ public class Binairo {
         state.printBoard();
         drawLine();
         state.printDomain();
-        System.out.println(MRV(state)[0]+","+MRV(state)[1]);
+        System.out.println("lcv color : "+LCV(state,0,2));
+        //System.out.println(MRV(state)[0]+","+MRV(state)[1]);
 
         //backtrack(state);
         long tEnd = System.nanoTime();
         System.out.println("Total time: " + (tEnd - tStart)/1000000000.000000000);
     }
 
-    private boolean forwardChecking(State state,int x,int y){
+    private int forwardChecking(State state,int x,int y){
+        int count=0;
         String cur=state.getBoard().get(x).get(y);
 
         int numberOfWhites = 0;
@@ -45,19 +51,24 @@ public class Binairo {
                 case "b", "B" -> numberOfBlacks++;
             }
         }
+
         if(numberOfBlacks==n/2){
             for (int i = 0; i <n; i++) {
-                state.getDomain().get(x).get(i).remove("b");
+                if(state.getDomain().get(x).get(i).remove("b")){
+                    count++;
+                }
                 if (state.getDomain().get(x).get(i).size()==0){
-                    return false;
+                    return -1;
                 }
             }
         }
         if(numberOfWhites==n/2){
             for (int i = 0; i <n; i++) {
-                state.getDomain().get(x).get(i).remove("w");
+                if(state.getDomain().get(x).get(i).remove("w")){
+                    count++;
+                }
                 if (state.getDomain().get(x).get(i).size()==0){
-                    return false;
+                    return -1;
                 }
             }
         }
@@ -65,27 +76,35 @@ public class Binairo {
         if(y>0){
             if (state.getBoard().get(x).get(y-1).equals(cur)){
                 if (y>1) {
-                    state.getDomain().get(x).get(y - 2).remove(cur.toLowerCase());
-                    if (state.getDomain().get(x).get(y-2).size()==0){return false;}
+                    if(state.getDomain().get(x).get(y - 2).remove(cur.toLowerCase())){
+                      count++;
+                    }
+                    if (state.getDomain().get(x).get(y-2).size()==0){return -1;}
                 }
                 if(y<n-1){
-                    state.getDomain().get(x).get(y +1).remove(cur.toLowerCase());
-                    if (state.getDomain().get(x).get(y+1).size()==0){return false;}
+                    if(state.getDomain().get(x).get(y +1).remove(cur.toLowerCase())){
+                        count++;
+                    }
+                    if (state.getDomain().get(x).get(y+1).size()==0){return -1;}
                 }
             }
         }
         if(y<n-1 ){
             if (state.getBoard().get(x).get(y+1).equals(cur)){
                 if(y<n-2) {
-                    state.getDomain().get(x).get(y + 2).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x).get(y + 2).remove(cur.toLowerCase())){
+                        count++;
+                    }
                     if (state.getDomain().get(x).get(y + 2).size() == 0) {
-                        return false;
+                        return -1;
                     }
                 }
                 if(y>0){
-                    state.getDomain().get(x).get(y-1).remove(cur.toLowerCase());
+                    if(state.getDomain().get(x).get(y-1).remove(cur.toLowerCase())){
+                        count++;
+                    }
                     if (state.getDomain().get(x).get(y-1).size() == 0) {
-                        return false;
+                        return -1;
                     }
                 }
             }
@@ -104,17 +123,21 @@ public class Binairo {
         }
         if(numberOfBlacks==n/2){
             for (int i = 0; i <n; i++) {
-                state.getDomain().get(i).get(y).remove("b");
+                if (state.getDomain().get(i).get(y).remove("b")){
+                    count++;
+                }
                 if (state.getDomain().get(i).get(y).size()==0){
-                    return false;
+                    return -1;
                 }
             }
         }
         if(numberOfWhites==n/2){
             for (int i = 0; i <n; i++) {
-                state.getDomain().get(i).get(y).remove("w");
+                if(state.getDomain().get(i).get(y).remove("w")){
+                    count++;
+                }
                 if (state.getDomain().get(i).get(y).size()==0){
-                    return false;
+                    return -1;
                 }
             }
         }
@@ -122,33 +145,41 @@ public class Binairo {
         if(x>0){
             if (state.getBoard().get(x-1).get(y).equals(cur)){
                 if (x>1) {
-                    state.getDomain().get(x-2).get(y).remove(cur.toLowerCase());
-                    if (state.getDomain().get(x-2).get(y).size()==0){return false;}
+                    if (state.getDomain().get(x-2).get(y).remove(cur.toLowerCase())){
+                        count++;
+                    }
+                    if (state.getDomain().get(x-2).get(y).size()==0){return -1;}
                 }
                 if(x<n-1){
-                    state.getDomain().get(x+1).get(y).remove(cur.toLowerCase());
-                    if (state.getDomain().get(x+1).get(y).size()==0){return false;}
+                    if (state.getDomain().get(x+1).get(y).remove(cur.toLowerCase())){
+                        count++;
+                    }
+                    if (state.getDomain().get(x+1).get(y).size()==0){return -1;}
                 }
             }
         }
         if(x<n-1 ){
             if (state.getBoard().get(x+1).get(y).equals(cur)){
                 if(x<n-2) {
-                    state.getDomain().get(x+2).get(y).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x+2).get(y).remove(cur.toLowerCase())){
+                        count++;
+                    }
                     if (state.getDomain().get(x+2).get(y).size() == 0) {
-                        return false;
+                        return -1;
                     }
                 }
                 if(x>0){
-                    state.getDomain().get(x-1).get(y).remove(cur.toLowerCase());
+                    if(state.getDomain().get(x-1).get(y).remove(cur.toLowerCase())){
+                        count++;
+                    }
                     if (state.getDomain().get(x-1).get(y).size() == 0) {
-                        return false;
+                        return -1;
                     }
                 }
             }
         }
 
-        return true;
+        return count;
     }
 
     private int[] MRV(State state){
@@ -156,7 +187,6 @@ public class Binairo {
         for (int i = 0; i <n ; i++) {
             for (int j = 0; j <n ; j++) {
                 if (state.getDomain().get(i).get(j).size() == 1 ) {
-                    System.out.println("hi");
                     if (!state.getDomain().get(i).get(j).get(0).equals("n")) return new int[]{i, j};
                 }
                 point= new int[]{i, j};
@@ -164,6 +194,159 @@ public class Binairo {
         }
         return point;
     }
+
+    private String LCV(State state,int x,int y){
+        int min=Integer.MAX_VALUE;
+        String s=null;
+        for (int i = 0; i <state.getDomain().get(x).get(y).size(); i++) {
+            String cur = state.getDomain().get(x).get(y).get(i);
+            State temp= state.copy();
+            temp.getBoard().get(x).set(y,cur.toUpperCase());
+            temp.getDomain().get(x).set(y, new ArrayList<>(List.of("n")));
+            int compering=forwardChecking(temp,x,y);
+            if (compering < min) {
+                min = compering;
+                s=cur;
+            }
+        }
+        return s;
+
+    }
+/*
+    private String LCV(State state,int x,int y){
+        int[] compering=new int[2];
+        for (int k = 0; k <state.getDomain().get(x).get(y).size() ; k++) {
+            String cur = state.getDomain().get(x).get(y).get(k);
+            int numberOfWhites = 0;
+            int numberOfBlacks = 0;
+            for (int i = 0; i < n; i++) {
+                String a = state.getBoard().get(x).get(i);
+                switch (a) {
+                    case "w", "W" -> numberOfWhites++;
+                    case "b", "B" -> numberOfBlacks++;
+                }
+            }
+            if (numberOfBlacks == n / 2) {
+                for (int i = 0; i < n; i++) {
+                    compering[k]++;
+                    if (state.getDomain().get(x).get(i).size() == 0) {
+                        compering[k]=-1;
+                    }
+                }
+            }
+            if (numberOfWhites == n / 2) {
+                for (int i = 0; i < n; i++) {
+                    compering[k]++;
+                    if (state.getDomain().get(x).get(i).size() == 0) {
+                        compering[k]=-1;
+                    }
+                }
+            }
+
+            if (y > 0) {
+                if (state.getBoard().get(x).get(y - 1).equals(cur)) {
+                    if (y > 1) {
+                        compering[k]++;
+                        if (state.getDomain().get(x).get(y - 2).size() == 0) {
+                            compering[k]=-1;
+                            continue;
+                        }
+                    }
+                    if (y < n - 1) {
+                        state.getDomain().get(x).get(y + 1).remove(cur.toLowerCase());
+                        if (state.getDomain().get(x).get(y + 1).size() == 0) {
+                            compering[k]=-1;
+                            continue;                        }
+                    }
+                }
+            }
+            if (y < n - 1) {
+                if (state.getBoard().get(x).get(y + 1).equals(cur)) {
+                    if (y < n - 2) {
+                        state.getDomain().get(x).get(y + 2).remove(cur.toLowerCase());
+                        if (state.getDomain().get(x).get(y + 2).size() == 0) {
+                            compering[k]=-1;
+                            continue;
+                        }
+                    }
+                    if (y > 0) {
+                        state.getDomain().get(x).get(y - 1).remove(cur.toLowerCase());
+                        if (state.getDomain().get(x).get(y - 1).size() == 0) {
+                            compering[k]=-1;
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            //column
+
+            numberOfWhites = 0;
+            numberOfBlacks = 0;
+            for (int i = 0; i < n; i++) {
+                String a = state.getBoard().get(i).get(y);
+                switch (a) {
+                    case "w", "W" -> numberOfWhites++;
+                    case "b", "B" -> numberOfBlacks++;
+                }
+            }
+            if (numberOfBlacks == n / 2) {
+                for (int i = 0; i < n; i++) {
+                    state.getDomain().get(i).get(y).remove("b");
+                    if (state.getDomain().get(i).get(y).size() == 0) {
+                        return false;
+                    }
+                }
+            }
+            if (numberOfWhites == n / 2) {
+                for (int i = 0; i < n; i++) {
+                    state.getDomain().get(i).get(y).remove("w");
+                    if (state.getDomain().get(i).get(y).size() == 0) {
+                        return false;
+                    }
+                }
+            }
+
+            if (x > 0) {
+                if (state.getBoard().get(x - 1).get(y).equals(cur)) {
+                    if (x > 1) {
+                        state.getDomain().get(x - 2).get(y).remove(cur.toLowerCase());
+                        if (state.getDomain().get(x - 2).get(y).size() == 0) {
+                            compering[k]=-1;
+                            continue;
+                        }
+                    }
+                    if (x < n - 1) {
+                        state.getDomain().get(x + 1).get(y).remove(cur.toLowerCase());
+                        if (state.getDomain().get(x + 1).get(y).size() == 0) {
+                            compering[k]=-1;
+                            continue;
+                        }
+                    }
+                }
+            }
+            if (x < n - 1) {
+                if (state.getBoard().get(x + 1).get(y).equals(cur)) {
+                    if (x < n - 2) {
+                        state.getDomain().get(x + 2).get(y).remove(cur.toLowerCase());
+                        if (state.getDomain().get(x + 2).get(y).size() == 0) {
+                            compering[k]=-1;
+                            continue;
+                        }
+                    }
+                    if (x > 0) {
+                        state.getDomain().get(x - 1).get(y).remove(cur.toLowerCase());
+                        if (state.getDomain().get(x - 1).get(y).size() == 0) {
+                            compering[k]=-1;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+ */
 
     private boolean checkNumberOfCircles(State state) {
         ArrayList<ArrayList<String>> cBoard = state.getBoard();
