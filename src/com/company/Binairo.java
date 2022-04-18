@@ -6,12 +6,15 @@ public class Binairo {
     private final ArrayList<ArrayList<ArrayList<String>>> domain;
     private final int n;
 
-    public Binairo(ArrayList<ArrayList<String>> board,
-                   ArrayList<ArrayList<ArrayList<String>>> domain,
-                   int n) {
-        this.board = board;
-        this.domain = domain;
+    public Binairo(ArrayList<ArrayList<String>> board, ArrayList<ArrayList<ArrayList<String>>> domain, int n, int[][] listP,int m) {
         this.n = n;
+        State state = new State(board, domain);
+
+        for (int i = 0; i <m ; i++) {
+            forwardChecking(state,listP[0][i],listP[1][i]);
+        }
+        this.board = board;
+        this.domain = state.getDomain();
     }
 
     public void start() {
@@ -27,6 +30,124 @@ public class Binairo {
         //backtrack(state);
         long tEnd = System.nanoTime();
         System.out.println("Total time: " + (tEnd - tStart)/1000000000.000000000);
+    }
+
+    private boolean forwardChecking(State state,int x,int y){
+        String cur=state.getBoard().get(x).get(y);
+
+        int numberOfWhites = 0;
+        int numberOfBlacks = 0;
+        for (int i = 0; i <n; i++) {
+            String a=state.getBoard().get(x).get(i);
+            switch (a) {
+                case "w", "W" -> numberOfWhites++;
+                case "b", "B" -> numberOfBlacks++;
+            }
+        }
+        if(numberOfBlacks==n/2){
+            for (int i = 0; i <n; i++) {
+                state.getDomain().get(x).get(i).remove("b");
+                if (state.getDomain().get(x).get(i).size()==0){
+                    return false;
+                }
+            }
+        }
+        if(numberOfWhites==n/2){
+            for (int i = 0; i <n; i++) {
+                state.getDomain().get(x).get(i).remove("w");
+                if (state.getDomain().get(x).get(i).size()==0){
+                    return false;
+                }
+            }
+        }
+
+        if(y>0){
+            if (state.getBoard().get(x).get(y-1).equals(cur)){
+                if (y>1) {
+                    state.getDomain().get(x).get(y - 2).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x).get(y-2).size()==0){return false;}
+                }
+                if(y<n-1){
+                    state.getDomain().get(x).get(y +1).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x).get(y+1).size()==0){return false;}
+                }
+            }
+        }
+        if(y<n-1 ){
+            if (state.getBoard().get(x).get(y+1).equals(cur)){
+                if(y<n-2) {
+                    state.getDomain().get(x).get(y + 2).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x).get(y + 2).size() == 0) {
+                        return false;
+                    }
+                }
+                if(y>0){
+                    state.getDomain().get(x).get(y-1).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x).get(y-1).size() == 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        //column
+
+        numberOfWhites = 0;
+        numberOfBlacks = 0;
+        for (int i = 0; i <n; i++) {
+            String a=state.getBoard().get(i).get(y);
+            switch (a) {
+                case "w", "W" -> numberOfWhites++;
+                case "b", "B" -> numberOfBlacks++;
+            }
+        }
+        if(numberOfBlacks==n/2){
+            for (int i = 0; i <n; i++) {
+                state.getDomain().get(i).get(y).remove("b");
+                if (state.getDomain().get(i).get(y).size()==0){
+                    return false;
+                }
+            }
+        }
+        if(numberOfWhites==n/2){
+            for (int i = 0; i <n; i++) {
+                state.getDomain().get(i).get(y).remove("w");
+                if (state.getDomain().get(i).get(y).size()==0){
+                    return false;
+                }
+            }
+        }
+
+        if(x>0){
+            if (state.getBoard().get(x-1).get(y).equals(cur)){
+                if (x>1) {
+                    state.getDomain().get(x-2).get(y).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x-2).get(y).size()==0){return false;}
+                }
+                if(x<n-1){
+                    state.getDomain().get(x+1).get(y).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x+1).get(y).size()==0){return false;}
+                }
+            }
+        }
+        if(x<n-1 ){
+            if (state.getBoard().get(x+1).get(y).equals(cur)){
+                if(x<n-2) {
+                    state.getDomain().get(x+2).get(y).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x+2).get(y).size() == 0) {
+                        return false;
+                    }
+                }
+                if(x>0){
+                    state.getDomain().get(x-1).get(y).remove(cur.toLowerCase());
+                    if (state.getDomain().get(x-1).get(y).size() == 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     private boolean checkNumberOfCircles(State state) {
