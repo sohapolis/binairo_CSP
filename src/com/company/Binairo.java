@@ -9,6 +9,7 @@ public class Binairo {
     private final ArrayList<ArrayList<String>> board;
     private final ArrayList<ArrayList<ArrayList<String>>> domain;
     private final int n;
+    private State finalState;
 
     public Binairo(ArrayList<ArrayList<String>> board, ArrayList<ArrayList<ArrayList<String>>> domain, int n, int[][] listP,int m) {
         this.n = n;
@@ -29,11 +30,29 @@ public class Binairo {
         System.out.println("Initial Board: \n");
         state.printBoard();
         drawLine();
-        state.printDomain();
+        //state.printDomain();
         //System.out.println("lcv color : "+LCV(state,0,2));
         //System.out.println(MRV(state)[0]+","+MRV(state)[1]);
+        if (isConsistent(state)) {
+            backtrack(state);
+            if (finalState==null) {
+                System.out.println("failed");
+                drawLine();
+            }
+            else
+            {
+                System.out.println("Result board:");
+                finalState.printBoard();
+                drawLine();
+                //System.out.println("////////////////");
+                //finalState.printDomain();
+            }
 
-        backtrack(state);
+        }
+        else {
+            System.out.println("failed");
+            drawLine();;
+        }
         long tEnd = System.nanoTime();
         System.out.println("Total time: " + (tEnd - tStart)/1000000000.000000000);
     }
@@ -208,13 +227,12 @@ public class Binairo {
             temp.printDomain();
             System.out.println("////////////////////");
             temp.printBoard();
-
              */
 
             temp.getBoard().get(x).set(y,cur.toUpperCase());
             temp.getDomain().get(x).set(y, new ArrayList<>(List.of("n")));
             int compering=forwardChecking(temp,x,y);
-            System.out.println("point "+x+","+y+" cur: "+cur+ " compering:"+compering);
+            //System.out.println("point "+x+","+y+" cur: "+cur+ " compering:"+compering);
             if (compering < min) {
                 min = compering;
                 s=cur;
@@ -225,9 +243,10 @@ public class Binairo {
     }
 
 
-    private void backtrack(State state){
+    private boolean backtrack(State state){
         if (isFinished(state)){
-            //return true;
+            this.finalState=state;
+            return true;
         }
         int[] point=MRV(state);
         String color=LCV(state,point[0],point[1]);
@@ -246,6 +265,20 @@ public class Binairo {
         System.out.println(priority);
 
          */
+        for (String s:priority) {
+            State temp=state.copy();
+            temp.getBoard().get(point[0]).set(point[1],s);
+            temp.getDomain().get(point[0]).set(point[1],new ArrayList<>(List.of("n")));
+            if (isConsistent(temp)) {
+                if (forwardChecking(temp,point[0],point[1])!=-1) {
+                    if (backtrack(temp)) {
+                       // this.finalState = temp;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private boolean checkNumberOfCircles(State state) {
