@@ -58,29 +58,7 @@ public class State {
 
         return res;
     }
-    /*
-    private ArrayList<ArrayList<ArrayList<String>>> copyDomain(ArrayList<ArrayList<ArrayList<String>>> cDomain) {
-        ArrayList<ArrayList<ArrayList<String>>> res = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            ArrayList<ArrayList<String>> row = new ArrayList<>();
-            for (int j = 0; j < n; j++) {
-                row.add(new ArrayList<>(Arrays.asList("", "")));
-            }
-            res.add(row);
-        }
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < cDomain.get(i).get(j).size(); k++) {
-                    res.get(i).get(j).set(k, cDomain.get(i).get(j).get(k));
-                }
-            }
-        }
-
-        return res;
-    }
-
-     */
     private ArrayList<ArrayList<ArrayList<String>>> copyDomain(ArrayList<ArrayList<ArrayList<String>>> cDomain) {
 
         ArrayList<ArrayList<ArrayList<String>>> res = new ArrayList<>();

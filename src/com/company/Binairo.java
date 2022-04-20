@@ -30,9 +30,7 @@ public class Binairo {
         System.out.println("Initial Board: \n");
         state.printBoard();
         drawLine();
-        //state.printDomain();
-        //System.out.println("lcv color : "+LCV(state,0,2));
-        //System.out.println(MRV(state)[0]+","+MRV(state)[1]);
+
         if (isConsistent(state)) {
             backtrack(state);
             //backtrackAC3(state,0);
@@ -46,8 +44,6 @@ public class Binairo {
                 System.out.println("Result board:");
                 finalState.printBoard();
                 drawLine();
-                //System.out.println("////////////////");
-                //finalState.printDomain();
             }
 
         }
@@ -223,18 +219,9 @@ public class Binairo {
         for (int i = 0; i <state.getDomain().get(x).get(y).size(); i++) {
             String cur = state.getDomain().get(x).get(y).get(i);
             State temp= state.copy();
-
-            /*
-            System.out.println("////////////////////");
-            temp.printDomain();
-            System.out.println("////////////////////");
-            temp.printBoard();
-             */
-
             temp.getBoard().get(x).set(y,cur.toUpperCase());
             temp.getDomain().get(x).set(y, new ArrayList<>(List.of("n")));
             int compering=forwardChecking(temp,x,y);
-            //System.out.println("point "+x+","+y+" cur: "+cur+ " compering:"+compering);
             if (compering < min) {
                 min = compering;
                 s=cur;
@@ -245,7 +232,6 @@ public class Binairo {
     }
 
     private boolean AC3(State state){
-        //ArrayList<ArrayList<ArrayList<String>>> list=state.getDomain();
         for (int i = 0; i <n ; i++) {
             for (int j = 0; j <n ; j++) {
                 if (!state.getDomain().get(i).get(j).get(0).equals("n")){
@@ -286,12 +272,6 @@ public class Binairo {
                 priority.add(s);
             }
         }
-        /*
-        System.out.println(point[0]+","+point[1]);
-        System.out.println(color);
-        System.out.println(priority);
-
-         */
         for (String s:priority) {
             count++;
             State temp=state.copy();
@@ -302,14 +282,12 @@ public class Binairo {
                     if (count%(n*100)==0) {
                         if (AC3(temp)) {
                             if (backtrackAC3(temp, count)) {
-                                // this.finalState = temp;
                                 return true;
                             }
                         }
                     }
                     else {
                         if (backtrackAC3(temp, count)) {
-                            // this.finalState = temp;
                             return true;
                         }
                     }
@@ -335,12 +313,6 @@ public class Binairo {
                 priority.add(s);
             }
         }
-        /*
-        System.out.println(point[0]+","+point[1]);
-        System.out.println(color);
-        System.out.println(priority);
-
-         */
         for (String s:priority) {
             State temp=state.copy();
             temp.getBoard().get(point[0]).set(point[1],s);
