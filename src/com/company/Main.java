@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File input = new File("C:\\Users\\Soha\\IdeaProjects\\CSP\\src\\com\\company\\inputs\\input2.txt");
+        File input = new File("C:\\Users\\Soha\\IdeaProjects\\CSP\\src\\com\\company\\inputs\\inputTEST.txt");
         ArrayList<ArrayList<String>> board = new ArrayList<>();
         ArrayList<ArrayList<ArrayList<String>>> domain = new ArrayList<>();
         try {

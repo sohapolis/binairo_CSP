@@ -34,8 +34,8 @@ public class Binairo {
         //System.out.println("lcv color : "+LCV(state,0,2));
         //System.out.println(MRV(state)[0]+","+MRV(state)[1]);
         if (isConsistent(state)) {
-            //backtrack(state);
-            backtrackAC3(state,0);
+            backtrack(state);
+            //backtrackAC3(state,0);
 
             if (finalState==null) {
                 System.out.println("failed");
@@ -255,7 +255,7 @@ public class Binairo {
                         State temp=state.copy();
                         temp.getDomain().get(i).set(j,new ArrayList<>(List.of("n")));
                         temp.getBoard().get(i).set(j,d.toUpperCase());
-                        if (forwardChecking(temp,i,j)==-1 || !checkIfUnique(temp)){
+                        if (forwardChecking(temp,i,j)==-1){
                             domain.remove(d);
                         }
                     }
@@ -299,8 +299,16 @@ public class Binairo {
             temp.getDomain().get(point[0]).set(point[1],new ArrayList<>(List.of("n")));
             if (isConsistent(temp)) {
                 if (forwardChecking(temp,point[0],point[1])!=-1) {
-                    if (AC3(temp)) {
-                        if (backtrackAC3(temp,count)) {
+                    if (count%(n*100)==0) {
+                        if (AC3(temp)) {
+                            if (backtrackAC3(temp, count)) {
+                                // this.finalState = temp;
+                                return true;
+                            }
+                        }
+                    }
+                    else {
+                        if (backtrackAC3(temp, count)) {
                             // this.finalState = temp;
                             return true;
                         }
